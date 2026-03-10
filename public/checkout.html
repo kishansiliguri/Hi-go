@@ -55,9 +55,28 @@
                     <div id="pickup-details" class="hidden mt-4 p-4 bg-orange-50 rounded-xl border border-orange-100">
                         <h3 class="font-bold text-orange-800 text-sm mb-1">Store Location</h3>
                         <p class="text-orange-700 text-sm mb-3" id="store-address">Loading...</p>
-                        <a href="#" id="whatsapp-location-btn" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-green-600 hover:text-green-700 bg-green-100 px-3 py-1.5 rounded-lg transition-colors">
+                        <a href="#" id="whatsapp-location-btn" target="_blank" class="inline-flex items-center gap-2 text-sm font-bold text-green-600 hover:text-green-700 bg-green-100 px-3 py-1.5 rounded-lg transition-colors mb-4">
                             <i data-lucide="message-circle" class="h-4 w-4"></i> Get location link by WhatsApp
                         </a>
+                        
+                        <div class="border-t border-orange-200 pt-4 mt-2">
+                            <h3 class="font-bold text-orange-800 text-sm mb-3">Select Pickup Time</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-orange-800 mb-1">Date</label>
+                                    <select id="pickup-date" class="w-full border border-orange-200 bg-white px-3 py-2 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm">
+                                        <option value="Today">Today</option>
+                                        <option value="Tomorrow">Tomorrow</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-orange-800 mb-1">Time</label>
+                                    <select id="pickup-time" class="w-full border border-orange-200 bg-white px-3 py-2 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm">
+                                        <!-- Will be populated by JS -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -154,6 +173,8 @@
                 const res = await fetch('/api/data');
                 siteData = await res.json();
                 
+                populateTimeOptions();
+                
                 if (!siteData.storeSettings) {
                     siteData.storeSettings = { deliveryCharge: 40, location: "Not specified", locationLink: "" };
                 }
@@ -219,6 +240,25 @@
 
             updateOrderType();
             renderCart();
+        }
+
+        function populateTimeOptions() {
+            const timeSelect = document.getElementById('pickup-time');
+            if (!timeSelect) return;
+            
+            let html = '';
+            // Generate times from 10:00 AM to 10:00 PM
+            for (let hour = 10; hour <= 22; hour++) {
+                for (let min of ['00', '30']) {
+                    if (hour === 22 && min === '30') continue; // Stop at 10:00 PM
+                    
+                    let displayHour = hour > 12 ? hour - 12 : hour;
+                    let ampm = hour >= 12 ? 'PM' : 'AM';
+                    let timeString = `${displayHour}:${min} ${ampm}`;
+                    html += `<option value="${timeString}">${timeString}</option>`;
+                }
+            }
+            timeSelect.innerHTML = html;
         }
 
         function updateOrderType() {
@@ -336,6 +376,10 @@
             text += `\n*Order Type:* ${orderType === 'delivery' ? 'Delivery' : 'Self Pickup'}\n`;
             if (orderType === 'delivery') {
                 text += `Address: ${address}\n`;
+            } else {
+                const pickupDate = document.getElementById('pickup-date').value;
+                const pickupTime = document.getElementById('pickup-time').value;
+                text += `Pickup Time: ${pickupDate} at ${pickupTime}\n`;
             }
             
             text += `\n*Order Items:*\n`;
