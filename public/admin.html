@@ -64,6 +64,27 @@
                 </div>
             </div>
 
+            <!-- Payment Settings -->
+            <div class="border p-6 rounded-lg bg-gray-50 mb-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                    <i data-lucide="credit-card" class="h-5 w-5 text-blue-500"></i> Payment Settings
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="cod-enabled" class="w-4 h-4 text-blue-600 rounded border-gray-300">
+                        <label class="text-sm font-medium text-gray-700">Enable Cash on Delivery (COD)</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="upi-enabled" class="w-4 h-4 text-blue-600 rounded border-gray-300">
+                        <label class="text-sm font-medium text-gray-700">Enable UPI Payment</label>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500">UPI ID</label>
+                        <input type="text" id="upi-id" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500" placeholder="example@upi">
+                    </div>
+                </div>
+            </div>
+
             <!-- Categories -->
             <div class="border p-6 rounded-lg bg-gray-50">
                 <div class="flex justify-between items-center mb-4">
@@ -112,6 +133,13 @@
             document.getElementById('brand-logo').value = siteData.brand.logoText;
             document.getElementById('hero-title').value = siteData.brand.heroTitle;
             document.getElementById('hero-subtitle').value = siteData.brand.heroSubtitle;
+
+            if (!siteData.paymentSettings) {
+                siteData.paymentSettings = { codEnabled: true, upiEnabled: true, upiId: "" };
+            }
+            document.getElementById('cod-enabled').checked = siteData.paymentSettings.codEnabled;
+            document.getElementById('upi-enabled').checked = siteData.paymentSettings.upiEnabled;
+            document.getElementById('upi-id').value = siteData.paymentSettings.upiId;
 
             renderCategories();
             renderFoods();
@@ -290,6 +318,12 @@
             siteData.brand.logoText = document.getElementById('brand-logo').value;
             siteData.brand.heroTitle = document.getElementById('hero-title').value;
             siteData.brand.heroSubtitle = document.getElementById('hero-subtitle').value;
+
+            siteData.paymentSettings = {
+                codEnabled: document.getElementById('cod-enabled').checked,
+                upiEnabled: document.getElementById('upi-enabled').checked,
+                upiId: document.getElementById('upi-id').value
+            };
 
             const res = await fetch('/api/save', {
                 method: 'POST',

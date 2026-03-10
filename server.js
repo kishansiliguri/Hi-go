@@ -102,6 +102,7 @@ app.post('/api/save', (req, res) => {
   currentData.brand = req.body.brand || currentData.brand;
   currentData.categories = req.body.categories || currentData.categories;
   currentData.foods = req.body.foods || currentData.foods;
+  currentData.paymentSettings = req.body.paymentSettings || currentData.paymentSettings;
 
   fs.writeFileSync(dataFile, JSON.stringify(currentData, null, 2));
   res.json({ success: true });
