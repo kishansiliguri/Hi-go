@@ -24,7 +24,7 @@
     {
       "id": 1,
       "name": "Classic Cheeseburger",
-      "restaurant": "Burger Joint",
+      "category": "Burger",
       "price": 149,
       "rating": 4.8,
       "reviews": 420,
@@ -34,7 +34,7 @@
     {
       "id": 2,
       "name": "Margherita Pizza",
-      "restaurant": "Napoli Pizzeria",
+      "category": "Pizza",
       "price": 299,
       "rating": 4.9,
       "reviews": 850,
@@ -44,7 +44,7 @@
     {
       "id": 3,
       "name": "Salmon Poke Bowl",
-      "restaurant": "Fresh Catch",
+      "category": "Asian",
       "price": 349,
       "rating": 4.7,
       "reviews": 310,
@@ -54,7 +54,7 @@
     {
       "id": 4,
       "name": "Spicy Tonkotsu Ramen",
-      "restaurant": "Ramen House",
+      "category": "Asian",
       "price": 249,
       "rating": 4.6,
       "reviews": 520,
@@ -64,7 +64,7 @@
     {
       "id": 5,
       "name": "Chicken Tikka Masala",
-      "restaurant": "Spice Route",
+      "category": "Asian",
       "price": 279,
       "rating": 4.8,
       "reviews": 640,
@@ -74,7 +74,7 @@
     {
       "id": 6,
       "name": "Avocado Toast",
-      "restaurant": "Green Cafe",
+      "category": "Healthy",
       "price": 129,
       "rating": 4.5,
       "reviews": 210,

@@ -243,14 +243,17 @@
                         <input type="number" value="${f.price}" onchange="updateFood(${index}, 'price', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500">Restaurant</label>
-                        <input type="text" value="${f.restaurant}" onchange="updateFood(${index}, 'restaurant', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
+                        <label class="block text-xs text-gray-500">Category</label>
+                        <select onchange="updateFood(${index}, 'category', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
+                            <option value="">Select Category</option>
+                            ${siteData.categories.map(c => `<option value="${c.name}" ${f.category === c.name ? 'selected' : ''}>${c.name}</option>`).join('')}
+                        </select>
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500">Image URL (or upload JPEG)</label>
-                        <div class="flex flex-col sm:flex-row gap-2 mt-1">
-                            <input type="text" value="${f.image}" id="img-url-${index}" onchange="updateFood(${index}, 'image', this.value)" class="w-full border p-2 rounded outline-none focus:border-blue-500">
-                            <input type="file" accept="image/jpeg, image/jpg" onchange="uploadImage(this, ${index})" class="text-xs w-full sm:w-auto p-1 border rounded bg-gray-50">
+                        <label class="block text-xs text-gray-500">Image Upload</label>
+                        <div class="flex items-center gap-4 mt-1">
+                            ${f.image ? `<img src="${f.image}" class="w-12 h-12 object-cover rounded border">` : `<div class="w-12 h-12 bg-gray-100 rounded border flex items-center justify-center text-gray-400"><i data-lucide="image" class="h-5 w-5"></i></div>`}
+                            <input type="file" accept="image/jpeg, image/jpg, image/png, image/webp" onchange="uploadImage(this, ${index})" class="text-xs w-full p-1 border rounded bg-gray-50">
                         </div>
                     </div>
                 </div>
@@ -274,12 +277,12 @@
             siteData.foods.unshift({
                 id: Date.now(),
                 name: "New Food Item",
-                restaurant: "My Restaurant",
+                category: siteData.categories.length > 0 ? siteData.categories[0].name : "",
                 price: 10.00,
                 rating: 5.0,
                 reviews: 0,
                 time: "15-20 min",
-                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+                image: ""
             });
             renderFoods();
         }
@@ -299,7 +302,7 @@
                 const data = await res.json();
                 if(data.url) {
                     siteData.foods[index].image = data.url;
-                    document.getElementById(`img-url-${index}`).value = data.url;
+                    renderFoods(); // Re-render to show the new image thumbnail
                     alert('Image uploaded successfully!');
                 } else {
                     alert('Upload failed: ' + data.error);
