@@ -99,6 +99,63 @@
         </div>
     </div>
 
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/50 z-[100] hidden items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden transform scale-95 transition-transform duration-300" id="auth-modal-content">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h2 class="text-2xl font-bold text-gray-900" id="auth-title">Sign In</h2>
+                <button onclick="closeAuthModal()" class="p-2 hover:bg-gray-200 rounded-full transition-colors"><i data-lucide="x" class="h-5 w-5 text-gray-500"></i></button>
+            </div>
+            <div class="p-6">
+                <!-- Login Form -->
+                <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone or Username</label>
+                        <input type="text" id="login-username" required class="w-full border border-gray-300 px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="login-password" required class="w-full border border-gray-300 pl-4 pr-12 py-2.5 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all">
+                            <button type="button" onclick="togglePassword('login-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i data-lucide="eye" class="h-5 w-5" id="login-password-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition-colors mt-2">Sign In</button>
+                    <p class="text-center text-sm text-gray-600 mt-4">Don't have an account? <a href="#" onclick="switchAuthMode('register')" class="text-orange-500 font-bold hover:underline">Register</a></p>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="space-y-4 hidden" onsubmit="handleRegister(event)">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="reg-name" required class="w-full border border-gray-300 px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                        <input type="tel" id="reg-phone" required class="w-full border border-gray-300 px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
+                        <textarea id="reg-address" required rows="2" class="w-full border border-gray-300 px-4 py-2.5 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="reg-password" required class="w-full border border-gray-300 pl-4 pr-12 py-2.5 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none transition-all">
+                            <button type="button" onclick="togglePassword('reg-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <i data-lucide="eye" class="h-5 w-5" id="reg-password-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition-colors mt-2">Create Account</button>
+                    <p class="text-center text-sm text-gray-600 mt-4">Already have an account? <a href="#" onclick="switchAuthMode('login')" class="text-orange-500 font-bold hover:underline">Sign In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <main>
         <!-- Hero Section -->
         <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
@@ -174,7 +231,12 @@
     <script>
         let siteData = {};
         let cart = [];
-        let currentUser = localStorage.getItem('currentUser');
+        let currentUser = null;
+        
+        try {
+            const stored = localStorage.getItem('currentUser');
+            if (stored) currentUser = JSON.parse(stored);
+        } catch(e) {}
 
         // Initialize Lucide Icons
         lucide.createIcons();
@@ -266,21 +328,112 @@
         }
 
         // Auth Logic
-        function login() {
-            const name = prompt("Enter your name to login (or type 'admin' for admin panel):");
-            if(name) {
-                if(name.toLowerCase() === 'admin') {
-                    const pass = prompt("Enter admin password (hint: admin123):");
-                    if(pass === 'admin123') {
+        function openAuthModal(mode = 'login') {
+            const modal = document.getElementById('auth-modal');
+            const content = document.getElementById('auth-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+            switchAuthMode(mode);
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            const content = document.getElementById('auth-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function switchAuthMode(mode) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const title = document.getElementById('auth-title');
+            if (mode === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                title.innerText = 'Sign In';
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                title.innerText = 'Create Account';
+            }
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(inputId + '-eye');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    if (data.role === 'admin') {
                         window.location.href = '/admin.html';
                     } else {
-                        alert("Wrong password!");
+                        localStorage.setItem('currentUser', JSON.stringify(data.user));
+                        currentUser = data.user;
+                        updateAuthUI();
+                        closeAuthModal();
+                        alert(`Welcome back, ${data.user.name}!`);
                     }
                 } else {
-                    localStorage.setItem('currentUser', name);
-                    currentUser = name;
-                    updateAuthUI();
+                    alert(data.error || 'Login failed');
                 }
+            } catch (err) {
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const phone = document.getElementById('reg-phone').value;
+            const address = document.getElementById('reg-address').value;
+            const password = document.getElementById('reg-password').value;
+            
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, address, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    updateAuthUI();
+                    closeAuthModal();
+                    alert(`Account created! Welcome, ${data.user.name}!`);
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            } catch (err) {
+                alert('An error occurred. Please try again.');
             }
         }
 
@@ -294,11 +447,11 @@
             const authBtns = document.querySelectorAll('.auth-btn');
             authBtns.forEach(btn => {
                 if(currentUser) {
-                    btn.innerHTML = `<i data-lucide="user" class="h-4 w-4"></i><span>Welcome, ${currentUser}</span>`;
+                    btn.innerHTML = `<i data-lucide="user" class="h-4 w-4"></i><span class="truncate max-w-[100px]">Hi, ${currentUser.name.split(' ')[0]}</span>`;
                     btn.onclick = logout;
                 } else {
                     btn.innerHTML = `<i data-lucide="user" class="h-4 w-4"></i><span>Sign In</span>`;
-                    btn.onclick = login;
+                    btn.onclick = () => openAuthModal('login');
                 }
             });
             lucide.createIcons();
@@ -372,13 +525,15 @@
 
         function checkoutWhatsApp() {
             if(cart.length === 0) return alert("Cart is empty!");
-            if(!currentUser) {
-                alert("Please sign in first to place an order.");
-                login();
-                return;
-            }
             
-            let text = `*New Order from ${currentUser}*\n\n`;
+            let text = `*New Order*\n\n`;
+            if (currentUser) {
+                text += `*Customer Details:*\nName: ${currentUser.name}\nPhone: ${currentUser.phone}\nAddress: ${currentUser.address}\n\n`;
+            } else {
+                text += `*Customer Details:*\nGuest Order (Please provide your name and address below)\n\n`;
+            }
+
+            text += `*Order Items:*\n`;
             let total = 0;
             cart.forEach(item => {
                 text += `${item.qty}x ${item.name} - $${(item.price * item.qty).toFixed(2)}\n`;

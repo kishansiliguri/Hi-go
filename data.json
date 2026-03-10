@@ -1,4 +1,9 @@
 {
+  "admin": {
+    "username": "admin",
+    "password": "123"
+  },
+  "users": [],
   "brand": {
     "name": "FoodieExpress",
     "logoText": "F",

@@ -5,18 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - FoodieExpress</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-gray-100 p-4 sm:p-8">
     <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
         <div class="flex justify-between items-center mb-6 border-b pb-4">
             <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
-            <a href="/" class="text-blue-500 hover:underline font-medium">Back to Site</a>
+            <a href="/" class="text-blue-500 hover:underline font-medium flex items-center gap-1">
+                <i data-lucide="arrow-left" class="h-4 w-4"></i> Back to Site
+            </a>
         </div>
         
         <div class="space-y-8">
+            <!-- Admin Credentials -->
+            <div class="border p-6 rounded-lg bg-gray-50">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center gap-2">
+                    <i data-lucide="shield" class="h-5 w-5 text-blue-500"></i> Admin Credentials
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Username</label>
+                        <input type="text" id="admin-username" class="w-full border p-2 rounded mt-1 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Password</label>
+                        <div class="relative">
+                            <input type="password" id="admin-password" class="w-full border p-2 rounded mt-1 focus:ring-2 focus:ring-blue-500 outline-none pr-10">
+                            <button type="button" onclick="toggleAdminPassword()" class="absolute right-3 top-1/2 translate-y-[-10%] text-gray-400 hover:text-gray-600">
+                                <i data-lucide="eye" class="h-5 w-5" id="admin-password-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Brand Settings -->
             <div class="border p-6 rounded-lg bg-gray-50">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Brand Settings</h2>
+                <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center gap-2">
+                    <i data-lucide="layout-template" class="h-5 w-5 text-blue-500"></i> Brand Settings
+                </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-600">Brand Name</label>
@@ -40,13 +67,19 @@
             <!-- Food Items -->
             <div class="border p-6 rounded-lg bg-gray-50">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-gray-700">Food Items</h2>
-                    <button onclick="addFood()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium transition-colors">Add New Food</button>
+                    <h2 class="text-xl font-semibold text-gray-700 flex items-center gap-2">
+                        <i data-lucide="utensils" class="h-5 w-5 text-blue-500"></i> Food Items
+                    </h2>
+                    <button onclick="addFood()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1">
+                        <i data-lucide="plus" class="h-4 w-4"></i> Add New Food
+                    </button>
                 </div>
                 <div id="admin-foods" class="space-y-4"></div>
             </div>
 
-            <button onclick="saveData()" class="w-full bg-green-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-600 transition-colors shadow-lg">Save All Changes</button>
+            <button onclick="saveData()" class="w-full bg-green-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-600 transition-colors shadow-lg flex justify-center items-center gap-2">
+                <i data-lucide="save" class="h-5 w-5"></i> Save All Changes
+            </button>
         </div>
     </div>
 
@@ -57,19 +90,40 @@
             const res = await fetch('/api/data');
             siteData = await res.json();
             
+            if(siteData.admin) {
+                document.getElementById('admin-username').value = siteData.admin.username;
+                document.getElementById('admin-password').value = siteData.admin.password;
+            }
+
             document.getElementById('brand-name').value = siteData.brand.name;
             document.getElementById('brand-logo').value = siteData.brand.logoText;
             document.getElementById('hero-title').value = siteData.brand.heroTitle;
             document.getElementById('hero-subtitle').value = siteData.brand.heroSubtitle;
 
             renderFoods();
+            lucide.createIcons();
+        }
+
+        function toggleAdminPassword() {
+            const input = document.getElementById('admin-password');
+            const icon = document.getElementById('admin-password-eye');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
         }
 
         function renderFoods() {
             const container = document.getElementById('admin-foods');
             container.innerHTML = siteData.foods.map((f, index) => `
                 <div class="border p-4 rounded bg-white shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
-                    <button onclick="deleteFood(${index})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold bg-red-50 w-8 h-8 rounded-full flex items-center justify-center">X</button>
+                    <button onclick="deleteFood(${index})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold bg-red-50 w-8 h-8 rounded-full flex items-center justify-center">
+                        <i data-lucide="trash-2" class="h-4 w-4"></i>
+                    </button>
                     <div>
                         <label class="block text-xs text-gray-500">Name</label>
                         <input type="text" value="${f.name}" onchange="updateFood(${index}, 'name', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
@@ -91,6 +145,7 @@
                     </div>
                 </div>
             `).join('');
+            lucide.createIcons();
         }
 
         function updateFood(index, key, value) {
@@ -145,6 +200,10 @@
         }
 
         async function saveData() {
+            if(!siteData.admin) siteData.admin = {};
+            siteData.admin.username = document.getElementById('admin-username').value;
+            siteData.admin.password = document.getElementById('admin-password').value;
+
             siteData.brand.name = document.getElementById('brand-name').value;
             siteData.brand.logoText = document.getElementById('brand-logo').value;
             siteData.brand.heroTitle = document.getElementById('hero-title').value;

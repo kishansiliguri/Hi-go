@@ -36,6 +36,51 @@ const upload = multer({
     }
 });
 
+// Auth Routes
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body;
+  let data = {};
+  if (fs.existsSync(dataFile)) {
+    data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+  }
+  
+  // Check Admin
+  if (data.admin && username === data.admin.username && password === data.admin.password) {
+    return res.json({ success: true, role: 'admin' });
+  }
+  
+  // Check Customer
+  if (data.users) {
+    const user = data.users.find(u => u.phone === username && u.password === password);
+    if (user) {
+      return res.json({ success: true, role: 'customer', user });
+    }
+  }
+  
+  res.status(401).json({ error: 'Invalid username or password' });
+});
+
+app.post('/api/auth/register', (req, res) => {
+  const { name, phone, address, password } = req.body;
+  let data = {};
+  if (fs.existsSync(dataFile)) {
+    data = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+  }
+  
+  if (!data.users) data.users = [];
+  
+  if (data.users.find(u => u.phone === phone)) {
+    return res.status(400).json({ error: 'Phone number already registered' });
+  }
+  
+  const newUser = { name, phone, address, password };
+  data.users.push(newUser);
+  fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
+  
+  res.json({ success: true, user: newUser });
+});
+
+// Data Routes
 app.get('/api/data', (req, res) => {
   if (fs.existsSync(dataFile)) {
     res.json(JSON.parse(fs.readFileSync(dataFile, 'utf8')));
