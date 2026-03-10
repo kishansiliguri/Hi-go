@@ -49,9 +49,11 @@ app.post('/api/auth/login', (req, res) => {
     return res.json({ success: true, role: 'admin' });
   }
   
-  // Check Customer
+  // Check Customer (allow login by phone or name)
   if (data.users) {
-    const user = data.users.find(u => u.phone === username && u.password === password);
+    const user = data.users.find(u => 
+      (u.phone === username || u.name === username) && u.password === password
+    );
     if (user) {
       return res.json({ success: true, role: 'customer', user });
     }
@@ -90,7 +92,18 @@ app.get('/api/data', (req, res) => {
 });
 
 app.post('/api/save', (req, res) => {
-  fs.writeFileSync(dataFile, JSON.stringify(req.body, null, 2));
+  let currentData = {};
+  if (fs.existsSync(dataFile)) {
+    currentData = JSON.parse(fs.readFileSync(dataFile, 'utf8'));
+  }
+  
+  // Preserve users array so admin doesn't overwrite registered customers
+  currentData.admin = req.body.admin || currentData.admin;
+  currentData.brand = req.body.brand || currentData.brand;
+  currentData.categories = req.body.categories || currentData.categories;
+  currentData.foods = req.body.foods || currentData.foods;
+
+  fs.writeFileSync(dataFile, JSON.stringify(currentData, null, 2));
   res.json({ success: true });
 });
 
