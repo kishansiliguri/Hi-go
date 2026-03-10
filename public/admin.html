@@ -64,6 +64,19 @@
                 </div>
             </div>
 
+            <!-- Categories -->
+            <div class="border p-6 rounded-lg bg-gray-50">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-700 flex items-center gap-2">
+                        <i data-lucide="grid" class="h-5 w-5 text-blue-500"></i> Categories
+                    </h2>
+                    <button onclick="addCategory()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-1">
+                        <i data-lucide="plus" class="h-4 w-4"></i> Add Category
+                    </button>
+                </div>
+                <div id="admin-categories" class="space-y-4"></div>
+            </div>
+
             <!-- Food Items -->
             <div class="border p-6 rounded-lg bg-gray-50">
                 <div class="flex justify-between items-center mb-4">
@@ -100,8 +113,77 @@
             document.getElementById('hero-title').value = siteData.brand.heroTitle;
             document.getElementById('hero-subtitle').value = siteData.brand.heroSubtitle;
 
+            renderCategories();
             renderFoods();
             lucide.createIcons();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('admin-categories');
+            container.innerHTML = siteData.categories.map((c, index) => `
+                <div class="border p-4 rounded bg-white shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                    <button onclick="deleteCategory(${index})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold bg-red-50 w-8 h-8 rounded-full flex items-center justify-center">
+                        <i data-lucide="trash-2" class="h-4 w-4"></i>
+                    </button>
+                    <div>
+                        <label class="block text-xs text-gray-500">Category Name</label>
+                        <input type="text" value="${c.name}" onchange="updateCategory(${index}, 'name', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500">Icon (Emoji or Image URL)</label>
+                        <div class="flex flex-col sm:flex-row gap-2 mt-1">
+                            <input type="text" value="${c.icon}" id="cat-icon-${index}" onchange="updateCategory(${index}, 'icon', this.value)" class="w-full border p-2 rounded outline-none focus:border-blue-500">
+                            <input type="file" accept="image/jpeg, image/jpg" onchange="uploadCategoryImage(this, ${index})" class="text-xs w-full sm:w-auto p-1 border rounded bg-gray-50">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function updateCategory(index, key, value) {
+            siteData.categories[index][key] = value;
+        }
+
+        function deleteCategory(index) {
+            if(confirm('Delete this category?')) {
+                siteData.categories.splice(index, 1);
+                renderCategories();
+            }
+        }
+
+        function addCategory() {
+            siteData.categories.unshift({
+                id: Date.now(),
+                name: "New Category",
+                icon: "🍽️"
+            });
+            renderCategories();
+        }
+
+        async function uploadCategoryImage(input, index) {
+            const file = input.files[0];
+            if(!file) return;
+            
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if(data.url) {
+                    siteData.categories[index].icon = data.url;
+                    document.getElementById(`cat-icon-${index}`).value = data.url;
+                    alert('Category image uploaded successfully!');
+                } else {
+                    alert('Upload failed: ' + data.error);
+                }
+            } catch(e) {
+                alert('Error uploading image');
+            }
         }
 
         function toggleAdminPassword() {
@@ -129,7 +211,7 @@
                         <input type="text" value="${f.name}" onchange="updateFood(${index}, 'name', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500">Price ($)</label>
+                        <label class="block text-xs text-gray-500">Price (₹)</label>
                         <input type="number" value="${f.price}" onchange="updateFood(${index}, 'price', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
                     </div>
                     <div>
