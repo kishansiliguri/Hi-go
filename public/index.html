@@ -501,70 +501,7 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white pt-16 pb-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-                <div>
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">F</div>
-                        <span class="font-bold text-xl tracking-tight">Foodie<span class="text-orange-500">Express</span></span>
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed">The fastest food delivery service in the city. We deliver your favorite meals fresh and hot.</p>
-                    <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors cursor-pointer"><span class="font-bold">fb</span></div>
-                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors cursor-pointer"><span class="font-bold">tw</span></div>
-                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors cursor-pointer"><span class="font-bold">ig</span></div>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-6">Company</h4>
-                    <ul class="space-y-4 text-gray-400">
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">About Us</a></li>
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">Careers</a></li>
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">Blog</a></li>
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">Contact</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-6">Support</h4>
-                    <ul class="space-y-4 text-gray-400">
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">Help Center</a></li>
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">Terms of Service</a></li>
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-orange-500 transition-colors">Partner with us</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-6">Get the App</h4>
-                    <p class="text-gray-400 mb-4">Order faster and easier with our mobile app.</p>
-                    <div class="space-y-3">
-                        <button class="w-full bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl flex items-center justify-center gap-3 transition-colors">
-                            <div class="text-left">
-                                <div class="text-xs text-gray-400">Download on the</div>
-                                <div class="font-bold text-sm">App Store</div>
-                            </div>
-                        </button>
-                        <button class="w-full bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl flex items-center justify-center gap-3 transition-colors">
-                            <div class="text-left">
-                                <div class="text-xs text-gray-400">GET IT ON</div>
-                                <div class="font-bold text-sm">Google Play</div>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                <p class="text-gray-500 text-sm">© 2026 FoodieExpress. All rights reserved.</p>
-                <div class="flex gap-6 text-sm text-gray-500">
-                    <a href="#" class="hover:text-white transition-colors">Terms</a>
-                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
-                    <a href="#" class="hover:text-white transition-colors">Cookies</a>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <script>
         // Initialize Lucide Icons
@@ -592,6 +529,30 @@
             mobileMenu.classList.toggle('hidden');
             menuIcon.classList.toggle('hidden');
             closeIcon.classList.toggle('hidden');
+        });
+
+        // Add functionality to all buttons
+        const allButtons = document.querySelectorAll('button');
+        allButtons.forEach(button => {
+            // Skip the mobile menu button as it already has functionality
+            if (button.id === 'mobile-menu-btn') return;
+            
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const buttonText = button.innerText.trim();
+                if (buttonText) {
+                    alert(`Action triggered: ${buttonText}`);
+                } else {
+                    // For icon-only buttons like cart or heart
+                    const icon = button.querySelector('i');
+                    if (icon) {
+                        const iconName = icon.getAttribute('data-lucide');
+                        alert(`Action triggered: ${iconName} button`);
+                    } else {
+                        alert('Action triggered!');
+                    }
+                }
+            });
         });
     </script>
 </body>
