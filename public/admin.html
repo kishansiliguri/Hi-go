@@ -64,6 +64,27 @@
                 </div>
             </div>
 
+            <!-- Store Settings -->
+            <div class="border p-6 rounded-lg bg-gray-50 mb-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                    <i data-lucide="store" class="h-5 w-5 text-blue-500"></i> Store Settings
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs text-gray-500">Delivery Charge (₹)</label>
+                        <input type="number" id="delivery-charge" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500" placeholder="40">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500">Store Location Address</label>
+                        <input type="text" id="store-location" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500" placeholder="123 Main St, City">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500">Store Location Link (Google Maps)</label>
+                        <input type="text" id="store-location-link" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500" placeholder="https://maps.google.com/...">
+                    </div>
+                </div>
+            </div>
+
             <!-- Payment Settings -->
             <div class="border p-6 rounded-lg bg-gray-50 mb-6">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
@@ -133,6 +154,13 @@
             document.getElementById('brand-logo').value = siteData.brand.logoText;
             document.getElementById('hero-title').value = siteData.brand.heroTitle;
             document.getElementById('hero-subtitle').value = siteData.brand.heroSubtitle;
+
+            if (!siteData.storeSettings) {
+                siteData.storeSettings = { deliveryCharge: 40, location: "123 Main St, City", locationLink: "" };
+            }
+            document.getElementById('delivery-charge').value = siteData.storeSettings.deliveryCharge;
+            document.getElementById('store-location').value = siteData.storeSettings.location;
+            document.getElementById('store-location-link').value = siteData.storeSettings.locationLink;
 
             if (!siteData.paymentSettings) {
                 siteData.paymentSettings = { codEnabled: true, upiEnabled: true, upiId: "" };
@@ -326,6 +354,12 @@
                 codEnabled: document.getElementById('cod-enabled').checked,
                 upiEnabled: document.getElementById('upi-enabled').checked,
                 upiId: document.getElementById('upi-id').value
+            };
+
+            siteData.storeSettings = {
+                deliveryCharge: parseFloat(document.getElementById('delivery-charge').value) || 0,
+                location: document.getElementById('store-location').value,
+                locationLink: document.getElementById('store-location-link').value
             };
 
             const res = await fetch('/api/save', {
