@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - FoodieExpress</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
+        <div class="flex justify-between items-center mb-6 border-b pb-4">
+            <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+            <a href="/" class="text-blue-500 hover:underline font-medium">Back to Site</a>
+        </div>
+        
+        <div class="space-y-8">
+            <!-- Brand Settings -->
+            <div class="border p-6 rounded-lg bg-gray-50">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Brand Settings</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Brand Name</label>
+                        <input type="text" id="brand-name" class="w-full border p-2 rounded mt-1 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600">Logo Text (e.g., F)</label>
+                        <input type="text" id="brand-logo" class="w-full border p-2 rounded mt-1 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div class="col-span-1 sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-600">Hero Title (HTML allowed)</label>
+                        <input type="text" id="hero-title" class="w-full border p-2 rounded mt-1 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                    <div class="col-span-1 sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-600">Hero Subtitle</label>
+                        <textarea id="hero-subtitle" class="w-full border p-2 rounded mt-1 focus:ring-2 focus:ring-blue-500 outline-none" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Food Items -->
+            <div class="border p-6 rounded-lg bg-gray-50">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-700">Food Items</h2>
+                    <button onclick="addFood()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium transition-colors">Add New Food</button>
+                </div>
+                <div id="admin-foods" class="space-y-4"></div>
+            </div>
+
+            <button onclick="saveData()" class="w-full bg-green-500 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-600 transition-colors shadow-lg">Save All Changes</button>
+        </div>
+    </div>
+
+    <script>
+        let siteData = {};
+
+        async function loadData() {
+            const res = await fetch('/api/data');
+            siteData = await res.json();
+            
+            document.getElementById('brand-name').value = siteData.brand.name;
+            document.getElementById('brand-logo').value = siteData.brand.logoText;
+            document.getElementById('hero-title').value = siteData.brand.heroTitle;
+            document.getElementById('hero-subtitle').value = siteData.brand.heroSubtitle;
+
+            renderFoods();
+        }
+
+        function renderFoods() {
+            const container = document.getElementById('admin-foods');
+            container.innerHTML = siteData.foods.map((f, index) => `
+                <div class="border p-4 rounded bg-white shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                    <button onclick="deleteFood(${index})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold bg-red-50 w-8 h-8 rounded-full flex items-center justify-center">X</button>
+                    <div>
+                        <label class="block text-xs text-gray-500">Name</label>
+                        <input type="text" value="${f.name}" onchange="updateFood(${index}, 'name', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500">Price ($)</label>
+                        <input type="number" value="${f.price}" onchange="updateFood(${index}, 'price', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500">Restaurant</label>
+                        <input type="text" value="${f.restaurant}" onchange="updateFood(${index}, 'restaurant', this.value)" class="w-full border p-2 rounded mt-1 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500">Image URL (or upload JPEG)</label>
+                        <div class="flex flex-col sm:flex-row gap-2 mt-1">
+                            <input type="text" value="${f.image}" id="img-url-${index}" onchange="updateFood(${index}, 'image', this.value)" class="w-full border p-2 rounded outline-none focus:border-blue-500">
+                            <input type="file" accept="image/jpeg, image/jpg" onchange="uploadImage(this, ${index})" class="text-xs w-full sm:w-auto p-1 border rounded bg-gray-50">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateFood(index, key, value) {
+            if(key === 'price') value = parseFloat(value);
+            siteData.foods[index][key] = value;
+        }
+
+        function deleteFood(index) {
+            if(confirm('Delete this food item?')) {
+                siteData.foods.splice(index, 1);
+                renderFoods();
+            }
+        }
+
+        function addFood() {
+            siteData.foods.unshift({
+                id: Date.now(),
+                name: "New Food Item",
+                restaurant: "My Restaurant",
+                price: 10.00,
+                rating: 5.0,
+                reviews: 0,
+                time: "15-20 min",
+                image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+            });
+            renderFoods();
+        }
+
+        async function uploadImage(input, index) {
+            const file = input.files[0];
+            if(!file) return;
+            
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if(data.url) {
+                    siteData.foods[index].image = data.url;
+                    document.getElementById(`img-url-${index}`).value = data.url;
+                    alert('Image uploaded successfully!');
+                } else {
+                    alert('Upload failed: ' + data.error);
+                }
+            } catch(e) {
+                alert('Error uploading image');
+            }
+        }
+
+        async function saveData() {
+            siteData.brand.name = document.getElementById('brand-name').value;
+            siteData.brand.logoText = document.getElementById('brand-logo').value;
+            siteData.brand.heroTitle = document.getElementById('hero-title').value;
+            siteData.brand.heroSubtitle = document.getElementById('hero-subtitle').value;
+
+            const res = await fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(siteData)
+            });
+            
+            if(res.ok) {
+                alert('Changes saved successfully!');
+            } else {
+                alert('Error saving changes');
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
