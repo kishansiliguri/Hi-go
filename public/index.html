@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodieExpress</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        orange: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900 selection:bg-orange-500 selection:text-white">
+
+    <!-- Navbar -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-orange-500/30">
+                        F
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-gray-900">
+                        Foodie<span class="text-orange-500">Express</span>
+                    </span>
+                </div>
+
+                <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+                    <div class="relative w-full group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="h-5 w-5 text-gray-400 group-focus-within:text-orange-500 transition-colors"></i>
+                        </div>
+                        <input type="text" class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-full leading-5 bg-white/80 backdrop-blur-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:bg-white transition-all sm:text-sm shadow-sm" placeholder="Search for restaurants, cuisines, or dishes...">
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center gap-6">
+                    <button class="text-gray-600 hover:text-orange-500 font-medium transition-colors">Offers</button>
+                    <button class="text-gray-600 hover:text-orange-500 font-medium transition-colors">Help</button>
+                    <div class="flex items-center gap-4 border-l border-gray-200 pl-6">
+                        <button class="relative p-2 text-gray-600 hover:text-orange-500 transition-colors">
+                            <i data-lucide="shopping-bag" class="h-6 w-6"></i>
+                            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-orange-500 rounded-full">3</span>
+                        </button>
+                        <button class="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-full font-medium transition-colors">
+                            <i data-lucide="user" class="h-4 w-4"></i>
+                            <span>Sign In</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="md:hidden flex items-center gap-4">
+                    <button class="relative p-2 text-gray-600">
+                        <i data-lucide="shopping-bag" class="h-6 w-6"></i>
+                        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-orange-500 rounded-full">3</span>
+                    </button>
+                    <button id="mobile-menu-btn" class="p-2 text-gray-600">
+                        <i data-lucide="menu" class="h-6 w-6" id="menu-icon"></i>
+                        <i data-lucide="x" class="h-6 w-6 hidden" id="close-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 px-4 py-4 shadow-lg overflow-hidden transition-all duration-300">
+            <div class="flex flex-col gap-4">
+                <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                    </div>
+                    <input type="text" class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white sm:text-sm" placeholder="Search...">
+                </div>
+                <button class="text-left font-medium text-gray-700 py-2 border-b border-gray-100">Offers</button>
+                <button class="text-left font-medium text-gray-700 py-2 border-b border-gray-100">Help</button>
+                <button class="flex items-center justify-center gap-2 bg-orange-500 text-white px-4 py-3 rounded-lg font-medium mt-2">
+                    <i data-lucide="user" class="h-5 w-5"></i>
+                    <span>Sign In / Sign Up</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+            <div class="absolute top-0 right-0 -z-10 w-full h-full overflow-hidden">
+                <div class="absolute top-[-10%] right-[-5%] w-[50%] h-[80%] bg-orange-100/50 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-[-10%] left-[-10%] w-[40%] h-[60%] bg-yellow-100/50 rounded-full blur-3xl"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="max-w-2xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-100 text-orange-600 font-medium text-sm mb-6">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                            </span>
+                            Fastest Delivery in Town
+                        </div>
+                        <h1 class="text-5xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-6">
+                            Craving something <br/>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-500">delicious?</span>
+                        </h1>
+                        <p class="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
+                            Order food from your favorite restaurants near you. Fresh, hot, and delivered to your door in minutes.
+                        </p>
+
+                        <div class="bg-white p-2 rounded-2xl shadow-xl shadow-gray-200/50 flex flex-col sm:flex-row gap-2 max-w-xl">
+                            <div class="relative flex-1 flex items-center">
+                                <i data-lucide="search" class="absolute left-4 h-5 w-5 text-orange-500"></i>
+                                <input type="text" placeholder="Search food..." class="w-full pl-12 pr-4 py-3.5 bg-transparent focus:outline-none text-gray-700 font-medium placeholder-gray-400">
+                            </div>
+                            <button class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+                                Search
+                                <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                            </button>
+                        </div>
+
+                        <div class="mt-10 flex items-center gap-6 text-sm text-gray-500 font-medium">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                    <i data-lucide="star" class="h-4 w-4 fill-current"></i>
+                                </div>
+                                <span>4.9/5 Ratings</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                    <i data-lucide="clock" class="h-4 w-4"></i>
+                                </div>
+                                <span>20 Min Delivery</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative hidden lg:block">
+                        <div class="relative w-full aspect-square max-w-lg mx-auto">
+                            <div class="absolute inset-0 bg-gradient-to-tr from-orange-400 to-yellow-400 rounded-full opacity-20 animate-pulse"></div>
+                            <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1000&q=80" alt="Delicious Burger" class="absolute inset-0 w-full h-full object-cover rounded-full border-8 border-white shadow-2xl" referrerpolicy="no-referrer">
+                            
+                            <div class="absolute -left-8 top-20 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-4 animate-bounce" style="animation-duration: 3s;">
+                                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=100&q=80" alt="Pizza" class="w-12 h-12 rounded-full object-cover" referrerpolicy="no-referrer">
+                                <div>
+                                    <p class="font-bold text-gray-900 text-sm">Hot Pizza</p>
+                                    <p class="text-xs text-gray-500">Delivered in 15m</p>
+                                </div>
+                            </div>
+
+                            <div class="absolute -right-4 bottom-20 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce" style="animation-duration: 4s; animation-delay: 1s;">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                                    <i data-lucide="star" class="h-5 w-5 fill-current"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-gray-900 text-sm">Top Rated</p>
+                                    <p class="text-xs text-gray-500">500+ Restaurants</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900">Explore Categories</h2>
+                    <button class="text-orange-500 font-medium hover:text-orange-600 flex items-center gap-1">
+                        See All <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                    </button>
+                </div>
+                
+                <div class="flex overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 gap-4 sm:gap-6 hide-scrollbar">
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🍕</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Pizza</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🍔</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Burger</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🍣</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Sushi</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🥗</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Healthy</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🍰</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Desserts</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🥤</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Drinks</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🍜</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Asian</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-3 min-w-[80px] sm:min-w-[100px] group">
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-50 group-hover:bg-orange-50 flex items-center justify-center text-3xl sm:text-4xl shadow-sm border border-gray-100 transition-colors">🌮</div>
+                        <span class="font-medium text-gray-700 group-hover:text-orange-500 transition-colors text-sm sm:text-base">Mexican</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Section -->
+        <section class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Popular Near You</h2>
+                        <p class="text-gray-500">Explore the most ordered dishes in your area</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm">Delivery</button>
+                        <button class="px-4 py-2 rounded-full border border-transparent bg-gray-100 text-gray-600 font-medium hover:bg-gray-200 transition-colors text-sm">Pickup</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
+                    <!-- Item 1 -->
+                    <div class="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col">
+                        <div class="relative h-32 sm:h-48 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" alt="Classic Cheeseburger" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer">
+                            <button class="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-white transition-colors">
+                                <i data-lucide="heart" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                            </button>
+                            <div class="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 flex gap-2">
+                                <span class="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-white/90 backdrop-blur-sm text-[10px] sm:text-xs font-bold text-gray-900 flex items-center gap-1">
+                                    <i data-lucide="clock" class="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500"></i>
+                                    <span class="hidden sm:inline">15-25 min</span>
+                                    <span class="sm:hidden">15-25</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-3 sm:p-5 flex flex-col flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2 gap-1">
+                                <h3 class="font-bold text-sm sm:text-lg text-gray-900 line-clamp-1">Classic Cheeseburger</h3>
+                                <span class="font-bold text-sm sm:text-lg text-orange-500">$12.99</span>
+                            </div>
+                            <p class="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-1">Burger Joint</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-1">
+                                    <i data-lucide="star" class="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400"></i>
+                                    <span class="font-bold text-xs sm:text-sm text-gray-900">4.8</span>
+                                    <span class="text-[10px] sm:text-sm text-gray-400 hidden sm:inline">(420)</span>
+                                </div>
+                                <button class="bg-gray-900 hover:bg-orange-500 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-colors">
+                                    <i data-lucide="shopping-bag" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col">
+                        <div class="relative h-32 sm:h-48 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=800&q=80" alt="Margherita Pizza" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer">
+                            <button class="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-white transition-colors">
+                                <i data-lucide="heart" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                            </button>
+                            <div class="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 flex gap-2">
+                                <span class="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-white/90 backdrop-blur-sm text-[10px] sm:text-xs font-bold text-gray-900 flex items-center gap-1">
+                                    <i data-lucide="clock" class="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500"></i>
+                                    <span class="hidden sm:inline">20-35 min</span>
+                                    <span class="sm:hidden">20-35</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-3 sm:p-5 flex flex-col flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2 gap-1">
+                                <h3 class="font-bold text-sm sm:text-lg text-gray-900 line-clamp-1">Margherita Pizza</h3>
+                                <span class="font-bold text-sm sm:text-lg text-orange-500">$16.50</span>
+                            </div>
+                            <p class="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-1">Napoli Pizzeria</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-1">
+                                    <i data-lucide="star" class="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400"></i>
+                                    <span class="font-bold text-xs sm:text-sm text-gray-900">4.9</span>
+                                    <span class="text-[10px] sm:text-sm text-gray-400 hidden sm:inline">(850)</span>
+                                </div>
+                                <button class="bg-gray-900 hover:bg-orange-500 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-colors">
+                                    <i data-lucide="shopping-bag" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col">
+                        <div class="relative h-32 sm:h-48 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80" alt="Salmon Poke Bowl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer">
+                            <button class="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-white transition-colors">
+                                <i data-lucide="heart" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                            </button>
+                            <div class="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 flex gap-2">
+                                <span class="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-white/90 backdrop-blur-sm text-[10px] sm:text-xs font-bold text-gray-900 flex items-center gap-1">
+                                    <i data-lucide="clock" class="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500"></i>
+                                    <span class="hidden sm:inline">10-20 min</span>
+                                    <span class="sm:hidden">10-20</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-3 sm:p-5 flex flex-col flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2 gap-1">
+                                <h3 class="font-bold text-sm sm:text-lg text-gray-900 line-clamp-1">Salmon Poke Bowl</h3>
+                                <span class="font-bold text-sm sm:text-lg text-orange-500">$18.00</span>
+                            </div>
+                            <p class="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-1">Fresh Catch</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-1">
+                                    <i data-lucide="star" class="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400"></i>
+                                    <span class="font-bold text-xs sm:text-sm text-gray-900">4.7</span>
+                                    <span class="text-[10px] sm:text-sm text-gray-400 hidden sm:inline">(310)</span>
+                                </div>
+                                <button class="bg-gray-900 hover:bg-orange-500 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-colors">
+                                    <i data-lucide="shopping-bag" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col">
+                        <div class="relative h-32 sm:h-48 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1557872943-16a5ac26437e?auto=format&fit=crop&w=800&q=80" alt="Spicy Tonkotsu Ramen" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer">
+                            <button class="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-white transition-colors">
+                                <i data-lucide="heart" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                            </button>
+                            <div class="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 flex gap-2">
+                                <span class="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-white/90 backdrop-blur-sm text-[10px] sm:text-xs font-bold text-gray-900 flex items-center gap-1">
+                                    <i data-lucide="clock" class="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500"></i>
+                                    <span class="hidden sm:inline">25-40 min</span>
+                                    <span class="sm:hidden">25-40</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-3 sm:p-5 flex flex-col flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2 gap-1">
+                                <h3 class="font-bold text-sm sm:text-lg text-gray-900 line-clamp-1">Spicy Tonkotsu Ramen</h3>
+                                <span class="font-bold text-sm sm:text-lg text-orange-500">$15.99</span>
+                            </div>
+                            <p class="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-1">Ramen House</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-1">
+                                    <i data-lucide="star" class="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400"></i>
+                                    <span class="font-bold text-xs sm:text-sm text-gray-900">4.6</span>
+                                    <span class="text-[10px] sm:text-sm text-gray-400 hidden sm:inline">(520)</span>
+                                </div>
+                                <button class="bg-gray-900 hover:bg-orange-500 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-colors">
+                                    <i data-lucide="shopping-bag" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col">
+                        <div class="relative h-32 sm:h-48 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80" alt="Chicken Tikka Masala" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer">
+                            <button class="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-white transition-colors">
+                                <i data-lucide="heart" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                            </button>
+                            <div class="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 flex gap-2">
+                                <span class="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-white/90 backdrop-blur-sm text-[10px] sm:text-xs font-bold text-gray-900 flex items-center gap-1">
+                                    <i data-lucide="clock" class="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500"></i>
+                                    <span class="hidden sm:inline">30-45 min</span>
+                                    <span class="sm:hidden">30-45</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-3 sm:p-5 flex flex-col flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2 gap-1">
+                                <h3 class="font-bold text-sm sm:text-lg text-gray-900 line-clamp-1">Chicken Tikka Masala</h3>
+                                <span class="font-bold text-sm sm:text-lg text-orange-500">$17.50</span>
+                            </div>
+                            <p class="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-1">Spice Route</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-1">
+                                    <i data-lucide="star" class="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400"></i>
+                                    <span class="font-bold text-xs sm:text-sm text-gray-900">4.8</span>
+                                    <span class="text-[10px] sm:text-sm text-gray-400 hidden sm:inline">(640)</span>
+                                </div>
+                                <button class="bg-gray-900 hover:bg-orange-500 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-colors">
+                                    <i data-lucide="shopping-bag" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 6 -->
+                    <div class="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-gray-100 group flex flex-col">
+                        <div class="relative h-32 sm:h-48 overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?auto=format&fit=crop&w=800&q=80" alt="Avocado Toast" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer">
+                            <button class="absolute top-2 right-2 sm:top-4 sm:right-4 p-1.5 sm:p-2 rounded-full bg-white/80 backdrop-blur-sm text-gray-400 hover:text-red-500 hover:bg-white transition-colors">
+                                <i data-lucide="heart" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                            </button>
+                            <div class="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 flex gap-2">
+                                <span class="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md bg-white/90 backdrop-blur-sm text-[10px] sm:text-xs font-bold text-gray-900 flex items-center gap-1">
+                                    <i data-lucide="clock" class="h-2.5 w-2.5 sm:h-3 sm:w-3 text-orange-500"></i>
+                                    <span class="hidden sm:inline">10-15 min</span>
+                                    <span class="sm:hidden">10-15</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-3 sm:p-5 flex flex-col flex-1">
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 sm:mb-2 gap-1">
+                                <h3 class="font-bold text-sm sm:text-lg text-gray-900 line-clamp-1">Avocado Toast</h3>
+                                <span class="font-bold text-sm sm:text-lg text-orange-500">$9.99</span>
+                            </div>
+                            <p class="text-gray-500 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-1">Green Cafe</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <div class="flex items-center gap-1">
+                                    <i data-lucide="star" class="h-3 w-3 sm:h-4 sm:w-4 fill-yellow-400 text-yellow-400"></i>
+                                    <span class="font-bold text-xs sm:text-sm text-gray-900">4.5</span>
+                                    <span class="text-[10px] sm:text-sm text-gray-400 hidden sm:inline">(210)</span>
+                                </div>
+                                <button class="bg-gray-900 hover:bg-orange-500 text-white p-1.5 sm:p-2 rounded-lg sm:rounded-xl transition-colors">
+                                    <i data-lucide="shopping-bag" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <button class="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-900 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors shadow-sm">
+                        View All Restaurants
+                        <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+                    <p class="text-gray-500 text-lg">Ordering food has never been easier. Follow these simple steps to get your favorite meals delivered.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="text-center flex flex-col items-center group">
+                        <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center mb-6 group-hover:bg-orange-100 transition-colors relative">
+                            <i data-lucide="map-pin" class="h-8 w-8 text-orange-500"></i>
+                            <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-900 text-sm">1</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Set Location</h3>
+                        <p class="text-gray-500 leading-relaxed">Enter your address to find restaurants delivering to your area.</p>
+                    </div>
+                    <div class="text-center flex flex-col items-center group">
+                        <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center mb-6 group-hover:bg-orange-100 transition-colors relative">
+                            <i data-lucide="menu" class="h-8 w-8 text-orange-500"></i>
+                            <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-900 text-sm">2</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Choose Food</h3>
+                        <p class="text-gray-500 leading-relaxed">Browse hundreds of menus to find the food you like.</p>
+                    </div>
+                    <div class="text-center flex flex-col items-center group">
+                        <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center mb-6 group-hover:bg-orange-100 transition-colors relative">
+                            <i data-lucide="shopping-bag" class="h-8 w-8 text-orange-500"></i>
+                            <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-900 text-sm">3</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Pay Fast</h3>
+                        <p class="text-gray-500 leading-relaxed">Fast, secure, and simple payment options available.</p>
+                    </div>
+                    <div class="text-center flex flex-col items-center group">
+                        <div class="w-20 h-20 rounded-2xl bg-orange-50 flex items-center justify-center mb-6 group-hover:bg-orange-100 transition-colors relative">
+                            <i data-lucide="clock" class="h-8 w-8 text-orange-500"></i>
+                            <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center font-bold text-gray-900 text-sm">4</div>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Fast Delivery</h3>
+                        <p class="text-gray-500 leading-relaxed">Food is prepared & delivered to your door swiftly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">F</div>
+                        <span class="font-bold text-xl tracking-tight">Foodie<span class="text-orange-500">Express</span></span>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed">The fastest food delivery service in the city. We deliver your favorite meals fresh and hot.</p>
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors cursor-pointer"><span class="font-bold">fb</span></div>
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors cursor-pointer"><span class="font-bold">tw</span></div>
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-orange-500 transition-colors cursor-pointer"><span class="font-bold">ig</span></div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Company</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Support</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition-colors">Partner with us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-6">Get the App</h4>
+                    <p class="text-gray-400 mb-4">Order faster and easier with our mobile app.</p>
+                    <div class="space-y-3">
+                        <button class="w-full bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl flex items-center justify-center gap-3 transition-colors">
+                            <div class="text-left">
+                                <div class="text-xs text-gray-400">Download on the</div>
+                                <div class="font-bold text-sm">App Store</div>
+                            </div>
+                        </button>
+                        <button class="w-full bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-xl flex items-center justify-center gap-3 transition-colors">
+                            <div class="text-left">
+                                <div class="text-xs text-gray-400">GET IT ON</div>
+                                <div class="font-bold text-sm">Google Play</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-gray-500 text-sm">© 2026 FoodieExpress. All rights reserved.</p>
+                <div class="flex gap-6 text-sm text-gray-500">
+                    <a href="#" class="hover:text-white transition-colors">Terms</a>
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-white', 'shadow-sm', 'py-3');
+                navbar.classList.remove('bg-transparent', 'py-5');
+            } else {
+                navbar.classList.add('bg-transparent', 'py-5');
+                navbar.classList.remove('bg-white', 'shadow-sm', 'py-3');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
